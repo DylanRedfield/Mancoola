@@ -45,17 +45,18 @@ public class MainActivity extends ActionBarActivity {
         // Set default style to bold because player one always starts
         mPlayerOneScore = (TextView) findViewById(R.id.player_one_text);
         mPlayerOneScore.setTextColor(Color.RED);
-        mPlayerOneScore.setTypeface(null, Typeface.BOLD);
 
         mPlayerTwoScore = (TextView) findViewById(R.id.player_two_text);
         mPlayerTwoScore.setTextColor(Color.BLUE);
+        mPlayerTwoScore.setTypeface(null, Typeface.BOLD);
 
         mPlayerOne = (TextView) findViewById(R.id.player_one_overview);
         mPlayerOne.setTextColor(Color.RED);
-        mPlayerOne.setTypeface(null, Typeface.BOLD);
 
         mPlayerTwo = (TextView) findViewById(R.id.player_two_overview);
         mPlayerTwo.setTextColor(Color.BLUE);
+        mPlayerTwo.setTypeface(null, Typeface.BOLD);
+
         mBoard = new Board(mStoneCount, mPlayerTurn, getApplicationContext(),
                 mGridView, mPlayerOneScore, mPlayerTwoScore);
 
@@ -75,11 +76,11 @@ public class MainActivity extends ActionBarActivity {
     public void setListeners() {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                if (mPlayerTurn == 1 && position <= 5) {
+                if (mPlayerTurn == 2 && position <= 5) {
                     // mBoard.move();
 
                     //Swaps turn and bold
-                    mPlayerTurn++;
+                    mPlayerTurn--;
                     mPlayerOne.setTypeface(null, Typeface.NORMAL);
                     mPlayerTwo.setTypeface(null, Typeface.BOLD);
 
@@ -87,12 +88,12 @@ public class MainActivity extends ActionBarActivity {
                     mPlayerTwoScore.setTypeface(null, Typeface.BOLD);
 
                     // input paremeters are spots 1-6
-                    position += 1;
-                    mBoard.moveJ(position, mPlayerTurn);
+                    position = player2Index(position);
+                    mBoard.moveJ(position, 2);
                     // Needs to update grid to swap bold inside grid
                     makeGrid();
-                } else if (mPlayerTurn == 2 && position > 5) {
-                    mPlayerTurn--;
+                } else if (mPlayerTurn == 1 && position > 5) {
+                    mPlayerTurn++;
                     mPlayerTwo.setTypeface(null, Typeface.NORMAL);
                     mPlayerOne.setTypeface(null, Typeface.BOLD);
 
@@ -101,7 +102,7 @@ public class MainActivity extends ActionBarActivity {
 
                     position -= 5;
 
-                    mBoard.moveJ(position, mPlayerTurn);
+                    mBoard.moveJ(position, 1);
                     makeGrid();
                 } else {
                     // TODO make into dialog so no toast spam
@@ -126,6 +127,29 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
         });
+    }
+
+    private int player2Index(int spot) {
+        if (spot == 0)
+            return 6;
+
+        else if (spot == 1)
+            return 5;
+
+        else if (spot == 2)
+            return 4;
+
+        else if (spot == 3)
+            return 3;
+
+        else if (spot == 4)
+            return 2;
+
+        else if (spot == 5)
+            return 1;
+        else {
+            return -1;
+        }
     }
 
     @Override

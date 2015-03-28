@@ -53,15 +53,15 @@ public class GridAdapter extends BaseAdapter {
         textView.setBackgroundColor(Color.WHITE);
 
         if(position <= 5) {
-           textView.setTextColor(Color.RED);
+           textView.setTextColor(Color.BLUE);
 
-            if(mPlayerTurn == 1) {
+            if(mPlayerTurn == 2) {
                 textView.setTypeface(null, Typeface.BOLD);
             }
         } else {
-            textView.setTextColor(Color.BLUE);
+            textView.setTextColor(Color.RED);
 
-            if(mPlayerTurn == 2) {
+            if(mPlayerTurn == 1) {
                 textView.setTypeface(null, Typeface.BOLD);
             }
         }
