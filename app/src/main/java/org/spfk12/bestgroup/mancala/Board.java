@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.util.Log;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Board {
     private int mBoard[][];
@@ -70,22 +71,27 @@ public class Board {
         int startPlayer = player;
         boolean flag = false;
         boolean returnStatement = false;
+        boolean changeFlag = false;
+        boolean changeFlag2 = false;
+
 
         if (player == 2)
             spot = player2Index(spot);
         // Checks if it's Player's 2 turn so it can change the spot appropriately
         // (Player 1 = Player 2) 1 = 6, 2 = 5, 3 = 4, 4 = 3, 5 = 2, 6 = 1
-        int counter = mBoard[player % 2][spot - 1];                // Sets counter equal to number of stones in that spot
+        // Sets counter equal to number of stones in that spot
+        int counter = mBoard[player % 2][spot - 1];
+
 
         mBoard[player % 2][spot - 1] = 0;
-
         while (counter > 0) {
             if (player == 1) {
                 if (spot < mBoard[1].length) {
                     mBoard[1][spot] += 1;
-                    checkRake(spot, player);
+                    //checkRake(spot, player);
                     counter--;
                     spot++;
+                    checkRake(spot, startPlayer);
 /*                    if (checkRake(spot, startPlayer) == true) {
                         //goAgain(spot, player);
                         //returnStatement = true;
@@ -93,32 +99,54 @@ public class Board {
                     }*/
                     updateDisplay();
                 } else if (spot == mBoard[1].length) {
-                    mPlayerOneScore++;
+                    if (startPlayer == player) {
+                        mPlayerOneScore++;
+                        counter--;
+                        if (counter == 0) {
+                            mBoard[0][5] -= 1;
+                        }
+                    }
                     player = 2;        // Loop up to Player 2's row
+                    changeFlag = true;
                 }
             }
 
             if (player == 2) {
                 if (spot > 0) {
-                    if (mBoard[0][spot - 1] == 0 && flag == false) // Makes sure it doesn't loop over the same spot twice
-                    {
+                    // Makes sure it doesn't loop over the same spot twice
+                    if (mBoard[0][spot - 1] == 0 && flag == false) {
                         spot--;
                         flag = !flag;
                     } else {
                         mBoard[0][spot - 1] += 1;
-                        checkRake(spot, player);
                         spot--;
                         counter--;
 
                         updateDisplay();
                     }
                 } else if (spot == 0) {
-                    mPlayerTwoScore++;
+                    if (startPlayer == player) {
+                        mPlayerTwoScore++;
+                        counter--;
+
+                    }
                     //score2 = true;
                     player = 1;        // Loop down to Player 1's row
+                    changeFlag2 = true;
                 }
             }
         }
+        if(counter == 0) {
+            if(changeFlag) {
+                spot--;
+            } if(changeFlag2) {
+                spot--;
+            }
+            //checkRake();
+            Log.d("fuck", "Spot: " + spot + " Player: " + player);
+        }
+        updateDisplay();
+        //goAgain(spot, player);
         return returnStatement;
     }
 
@@ -146,32 +174,37 @@ public class Board {
         }
     }
 
-    private boolean checkRake(int finalSpot,int player)//to be implemented in the move class
+    private boolean checkRake(int finalSpot, int player)//to be implemented in the move class
     {
-        Log.d("rake", "spot: " + finalSpot + " Player: " + player);
-        int oppositeSpot = 0;
-        if(player==1) {
-            oppositeSpot = rakeConvert(player, finalSpot);
-            if (mBoard[0][finalSpot] == 1 && mBoard[1][finalSpot] > 0) {
-                mBoard[0][finalSpot] += mBoard[1][finalSpot];
-                mBoard[1][finalSpot] = 0;
+
+/*        int oppositeSpot = 0;
+        if (player == 1) {
+
+            Log.d("rake", "spot: " + finalSpot + " Player: " + player);
+            /*oppositeSpot = rakeConvert(player, finalSpot);
+            if (mBoard[0][finalSpot] == 1 && mBoard[1][oppositeSpot] > 0) {
+                mBoard[0][finalSpot] += mBoard[1][oppositeSpot];
+                mBoard[1][oppositeSpot] = 0;
                 return true;
             }
         }
 
-        if(player==2) {
-            oppositeSpot = rakeConvert(player, finalSpot);
-            if (mBoard[1][finalSpot] == 1 && mBoard[0][finalSpot] > 0) {
-                mBoard[1][finalSpot] += mBoard[0][finalSpot];
-                mBoard[0][finalSpot] = 0;
+        if (player == 2) {
+
+            Log.d("rake", "spot: " + finalSpot + " Player: " + player);
+             oppositeSpot = rakeConvert(player, finalSpot);
+            if (mBoard[1][finalSpot] == 1 && mBoard[0][oppositeSpot] > 0) {
+                mBoard[1][finalSpot] += mBoard[0][oppositeSpot];
+                mBoard[0][oppositeSpot] = 0;
                 return true;
             }
-        }
+        }*/
 
         return false;
     }
-        private int rakeConvert(int player, int spot) {
-            if(player == 1) {
+
+    private int rakeConvert(int player, int spot) {
+            /*if(player == 1) {
                 switch (spot) {
                     case 5:
                         return 1;
@@ -189,22 +222,43 @@ public class Board {
                         return -1;
 
                 }
+            }*/
+        if (player == 2) {
+            switch (spot) {
+                case 1:
+                    return 5;
+                case 2:
+                    return 4;
+                case 3:
+                    return 3;
+                case 4:
+                    return 2;
+                case 5:
+                    return 1;
+                case 6:
+                    return 0;
+                default:
+                    return -1;
             }
-            if(player == 2) {
-                switch (spot) {
-                    case 1 : return 5;
-                    case 2: return 4;
-                    case 3: return 3;
-                    case 4: return 2;
-                    case 5: return 1;
-                    case 6: return 0;
-                    default: return -1;
-                }
-            }
-            return -1;
+        }
+        return -1;
     }
 
-    private void goAgain(int finalCol, int player) {
+    private boolean goAgain(int finalCol, int player) {
+        if (player == 1) {
+            if (finalCol == 0) {
+                Log.d("go again", "" + player);
+                return true;
+            }
+        }
+
+        if (player == 2) {
+            if (finalCol == 1) {
+                Log.d("go again", "" + player);
+                return true;
+            }
+        }
+        return false;
     }
 
     public int[][] getBoard() {

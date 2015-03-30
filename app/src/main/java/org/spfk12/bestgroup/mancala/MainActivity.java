@@ -80,30 +80,35 @@ public class MainActivity extends ActionBarActivity {
                     // mBoard.move();
 
                     //Swaps turn and bold
-                    mPlayerTurn--;
-                    mPlayerOne.setTypeface(null, Typeface.NORMAL);
-                    mPlayerTwo.setTypeface(null, Typeface.BOLD);
 
-                    mPlayerOneScore.setTypeface(null, Typeface.NORMAL);
-                    mPlayerTwoScore.setTypeface(null, Typeface.BOLD);
 
                     // input paremeters are spots 1-6
                     position = player2Index(position);
-                    mBoard.moveJ(position, 2);
-                    // Needs to update grid to swap bold inside grid
-                    makeGrid();
-                } else if (mPlayerTurn == 1 && position > 5) {
-                    mPlayerTurn++;
-                    mPlayerTwo.setTypeface(null, Typeface.NORMAL);
-                    mPlayerOne.setTypeface(null, Typeface.BOLD);
+                    if (!mBoard.moveJ(position, 2)) {
+                        mPlayerTurn--;
+                        mPlayerOne.setTypeface(null, Typeface.NORMAL);
+                        mPlayerTwo.setTypeface(null, Typeface.BOLD);
 
-                    mPlayerTwoScore.setTypeface(null, Typeface.NORMAL);
-                    mPlayerOneScore.setTypeface(null, Typeface.BOLD);
+                        mPlayerOneScore.setTypeface(null, Typeface.NORMAL);
+                        mPlayerTwoScore.setTypeface(null, Typeface.BOLD);
+                        makeGrid();
+                    }
+                    // Needs to update grid to swap bold inside grid
+                } else if (mPlayerTurn == 1 && position > 5) {
+
 
                     position -= 5;
 
-                    mBoard.moveJ(position, 1);
-                    makeGrid();
+                    if(!mBoard.moveJ(position, 1)) {
+                        mPlayerTurn++;
+                        mPlayerTwo.setTypeface(null, Typeface.NORMAL);
+                        mPlayerOne.setTypeface(null, Typeface.BOLD);
+
+                        mPlayerTwoScore.setTypeface(null, Typeface.NORMAL);
+                        mPlayerOneScore.setTypeface(null, Typeface.BOLD);
+
+                        makeGrid();
+                    }
                 } else {
                     // TODO make into dialog so no toast spam
                     String player;
