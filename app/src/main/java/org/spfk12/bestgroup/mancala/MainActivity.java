@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -61,8 +60,6 @@ public class MainActivity extends ActionBarActivity {
         mBoard = new Board(mStoneCount, mPlayerTurn, MainActivity.this,
                 mGridView, mPlayerOneScore, mPlayerTwoScore);
 
-        Log.d("goAgain", "pls no");
-        // TODO add user input for stonecount
     }
 
     public void makeGrid() {
@@ -94,6 +91,18 @@ public class MainActivity extends ActionBarActivity {
                         mPlayerOneScore.setTypeface(null, Typeface.BOLD);
                         mPlayerTwoScore.setTypeface(null, Typeface.NORMAL);
 
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setMessage("It is still player two's turn!")
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        //do things
+                                    }
+                                });
+                        builder.setTitle("Go Again!");
+                        AlertDialog alert = builder.create();
+                        alert.show();
                     }
 
                     makeGrid();
@@ -113,6 +122,18 @@ public class MainActivity extends ActionBarActivity {
                         mPlayerOneScore.setTypeface(null, Typeface.NORMAL);
 
                         makeGrid();
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setMessage("It is still player one's turn!")
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        //do things
+                                    }
+                                });
+                        builder.setTitle("Go Again!");
+                        AlertDialog alert = builder.create();
+                        alert.show();
                     }
                 } else {
                     // TODO make into dialog so no toast spam
