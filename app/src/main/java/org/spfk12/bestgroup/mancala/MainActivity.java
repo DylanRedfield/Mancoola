@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -48,18 +49,19 @@ public class MainActivity extends ActionBarActivity {
 
         mPlayerTwoScore = (TextView) findViewById(R.id.player_two_text);
         mPlayerTwoScore.setTextColor(Color.BLUE);
-        mPlayerTwoScore.setTypeface(null, Typeface.BOLD);
+        mPlayerOneScore.setTypeface(null, Typeface.BOLD);
 
         mPlayerOne = (TextView) findViewById(R.id.player_one_overview);
         mPlayerOne.setTextColor(Color.RED);
 
         mPlayerTwo = (TextView) findViewById(R.id.player_two_overview);
         mPlayerTwo.setTextColor(Color.BLUE);
-        mPlayerTwo.setTypeface(null, Typeface.BOLD);
+        mPlayerOne.setTypeface(null, Typeface.BOLD);
 
-        mBoard = new Board(mStoneCount, mPlayerTurn, getApplicationContext(),
+        mBoard = new Board(mStoneCount, mPlayerTurn, MainActivity.this,
                 mGridView, mPlayerOneScore, mPlayerTwoScore);
 
+        Log.d("goAgain", "pls no");
         // TODO add user input for stonecount
     }
 
@@ -86,26 +88,29 @@ public class MainActivity extends ActionBarActivity {
                     position = player2Index(position);
                     if (!mBoard.moveJ(position, 2)) {
                         mPlayerTurn--;
-                        mPlayerOne.setTypeface(null, Typeface.NORMAL);
-                        mPlayerTwo.setTypeface(null, Typeface.BOLD);
+                        mPlayerOne.setTypeface(null, Typeface.BOLD);
+                        mPlayerTwo.setTypeface(null, Typeface.NORMAL);
 
-                        mPlayerOneScore.setTypeface(null, Typeface.NORMAL);
-                        mPlayerTwoScore.setTypeface(null, Typeface.BOLD);
-                        makeGrid();
+                        mPlayerOneScore.setTypeface(null, Typeface.BOLD);
+                        mPlayerTwoScore.setTypeface(null, Typeface.NORMAL);
+
                     }
+
+                    makeGrid();
+
                     // Needs to update grid to swap bold inside grid
                 } else if (mPlayerTurn == 1 && position > 5) {
 
 
                     position -= 5;
 
-                    if(!mBoard.moveJ(position, 1)) {
+                    if (!mBoard.moveJ(position, 1)) {
                         mPlayerTurn++;
-                        mPlayerTwo.setTypeface(null, Typeface.NORMAL);
-                        mPlayerOne.setTypeface(null, Typeface.BOLD);
+                        mPlayerTwo.setTypeface(null, Typeface.BOLD);
+                        mPlayerOne.setTypeface(null, Typeface.NORMAL);
 
-                        mPlayerTwoScore.setTypeface(null, Typeface.NORMAL);
-                        mPlayerOneScore.setTypeface(null, Typeface.BOLD);
+                        mPlayerTwoScore.setTypeface(null, Typeface.BOLD);
+                        mPlayerOneScore.setTypeface(null, Typeface.NORMAL);
 
                         makeGrid();
                     }
@@ -127,8 +132,7 @@ public class MainActivity extends ActionBarActivity {
                             });
                     builder.setTitle("Not Your Turn");
                     AlertDialog alert = builder.create();
-                    if (alert != null)
-                        alert.show();
+                    alert.show();
                 }
             }
         });
@@ -171,6 +175,7 @@ public class MainActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 mBoard.restartGame();
+                mPlayerTurn = 1;
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
