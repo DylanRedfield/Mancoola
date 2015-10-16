@@ -1,0 +1,2 @@
+# Mancoola
+Lightweight mancala game
